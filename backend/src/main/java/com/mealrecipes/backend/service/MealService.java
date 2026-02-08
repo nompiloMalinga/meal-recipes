@@ -1,6 +1,7 @@
 package com.mealrecipes.backend.service;
 
 import com.mealrecipes.backend.ResponseDto.CategoriesResponseDto;
+import com.mealrecipes.backend.ResponseDto.MealsResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +31,42 @@ public class MealService {
 
             ResponseEntity<CategoriesResponseDto> response = restTemplate.getForEntity(url, CategoriesResponseDto.class);
 
-            return Optional.ofNullable(response.getBody())
-                            .orElse(new CategoriesResponseDto(new ArrayList<>()));
+
+            CategoriesResponseDto body = Optional.ofNullable(response.getBody())
+                            .orElse(new CategoriesResponseDto());
+
+            if (body.getCategories().isEmpty()){
+                logger.info("Failed to fetch categories from MealDB API" );
+
+            }
+            return  body;
+
 
         } catch (Exception e) {
             logger.error("Failed to fetch categories from MealDB API:",e);
-            return new CategoriesResponseDto(new ArrayList<>());
+            return new CategoriesResponseDto();
         }
 
+    }
+
+    public MealsResponseDto getMeals(String mealName){
+        String url = BASE_URL + "/search.php?s="+mealName;
+
+        try {
+
+            ResponseEntity<MealsResponseDto> responseDto = restTemplate.getForEntity(url, MealsResponseDto.class);
+            MealsResponseDto body = Optional.ofNullable(responseDto.getBody())
+                    .orElse(new MealsResponseDto());
+
+            if (body.getMeals().isEmpty()){
+                logger.info("No meals found for search term: {}", mealName);
+
+            }
+            return  body;
+
+        } catch (Exception e) {
+            logger.error("Error calling MealDB API for search term: {}", mealName, e);
+            return new MealsResponseDto();
+        }
     }
 }
