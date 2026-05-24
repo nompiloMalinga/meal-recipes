@@ -1,5 +1,7 @@
 package com.mealrecipes.backend.service;
 
+import com.mealrecipes.backend.Repository.ApiConfigRepository;
+import com.mealrecipes.backend.Entity.apiConfig;
 import com.mealrecipes.backend.ResponseDto.CategoriesResponseDto;
 import com.mealrecipes.backend.dto.CategoryDto;
 import org.junit.jupiter.api.Test;
@@ -23,12 +25,16 @@ class MealServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
+    @Mock
+    private ApiConfigRepository apiConfigRepository;
 
     @InjectMocks
     private MealService mealService;
 
     @Test
     void getAllCategories_shouldReturnCategories(){
+        apiConfig config = new apiConfig();
+        config.setApi_url("https://www.themealdb.com/api/json/v1/1/categories.php");
 
         CategoriesResponseDto mockedResponse = new CategoriesResponseDto(List.of
                 (new CategoryDto("1","beef","pictures",
@@ -38,10 +44,14 @@ class MealServiceTest {
 
         ResponseEntity<CategoriesResponseDto> responseEntity = new ResponseEntity<>(mockedResponse, HttpStatus.OK);
 
+        when(apiConfigRepository.findByName("CATEGORIES_URL"))
+                .thenReturn(config);
+
         when(restTemplate.getForEntity("https://www.themealdb.com/api/json/v1/1/categories.php", CategoriesResponseDto.class))
                 .thenReturn(responseEntity);
 
         CategoriesResponseDto response = mealService.getAllCategories();
+        System.out.println(response);
         assertNotNull(response);
         assertEquals(2,response.getCategories().size());
         assertEquals("lamb",response.getCategories().get(1).getStrCategory());
@@ -53,9 +63,14 @@ class MealServiceTest {
     @Test
     void testGetAllCategories_EmptyBody_ReturnsEmptyList() {
 
+        apiConfig config = new apiConfig();
+        config.setApi_url("https://www.themealdb.com/api/json/v1/1/categories.php");
+
         CategoriesResponseDto responseDto = new CategoriesResponseDto(new ArrayList<>());
         ResponseEntity<CategoriesResponseDto> responseEntity = new ResponseEntity<>(responseDto, HttpStatus.OK);
 
+        when(apiConfigRepository.findByName("CATEGORIES_URL"))
+                .thenReturn(config);
         when(restTemplate.getForEntity("https://www.themealdb.com/api/json/v1/1/categories.php", CategoriesResponseDto.class))
                 .thenReturn(responseEntity);
 
