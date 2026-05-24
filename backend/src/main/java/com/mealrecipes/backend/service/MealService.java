@@ -1,5 +1,6 @@
 package com.mealrecipes.backend.service;
 
+import com.mealrecipes.backend.Repository.ApiConfigRepository;
 import com.mealrecipes.backend.ResponseDto.CategoriesResponseDto;
 import com.mealrecipes.backend.ResponseDto.MealsResponseDto;
 import org.slf4j.Logger;
@@ -9,29 +10,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Optional;
 @Service
 public class MealService {
 
-    private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1";
+    private final RestTemplate restTemplate;
+    private final ApiConfigRepository apiConfigRepository;
     public  final Logger logger = LoggerFactory.getLogger(MealService.class);
 
-    @Autowired
-    private final RestTemplate restTemplate;
 
-    public MealService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public MealService(RestTemplate restTemplate, ApiConfigRepository apiConfigRepository) {this.restTemplate = restTemplate;
+        this.apiConfigRepository = apiConfigRepository;
     }
 
     public CategoriesResponseDto getAllCategories(){
-        String url = BASE_URL +"/categories.php";
+        String url = apiConfigRepository.findByName("CATEGORIES_URL").getApi_url();
 
         try{
 
             ResponseEntity<CategoriesResponseDto> response = restTemplate.getForEntity(url, CategoriesResponseDto.class);
-
-
             CategoriesResponseDto body = Optional.ofNullable(response.getBody())
                             .orElse(new CategoriesResponseDto());
 
@@ -50,10 +47,8 @@ public class MealService {
     }
 
     public MealsResponseDto getMeals(String mealName){
-        String url = BASE_URL + "/search.php?s="+mealName;
-
+        String url = apiConfigRepository.findByName("MEAL_SEARCH").getApi_url()+mealName;
         try {
-
             ResponseEntity<MealsResponseDto> responseDto = restTemplate.getForEntity(url, MealsResponseDto.class);
             MealsResponseDto body = Optional.ofNullable(responseDto.getBody())
                     .orElse(new MealsResponseDto());
