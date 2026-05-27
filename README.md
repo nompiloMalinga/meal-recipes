@@ -26,3 +26,6 @@ JPA
 |--------|----------|-------------|
 | GET | `/api/meals/categories` | Get all meal categories |
 | GET | `/api/meals/search?name=chicken` | Search meals by name |
+
+## Frontend
+Built with Angular — [View Frontend Repository](meal-recipes-frontEnd)
