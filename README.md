@@ -28,4 +28,4 @@ JPA
 | GET | `/api/meals/search?name=chicken` | Search meals by name |
 
 ## Frontend
-Built with Angular — [View Frontend Repository](meal-recipes-frontEnd)
+Built with Angular — [View Frontend Repository](https://github.com/nompiloMalinga/meal-recipes-frontEnd)
