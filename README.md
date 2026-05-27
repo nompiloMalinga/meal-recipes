@@ -12,3 +12,17 @@ Java 17
 Spring Boot 3.5.7  
 Spring Web (REST APIs)  
 Mockito & JUnit 5.  
+PostgreSQL
+JPA
+
+## Setup
+1. Clone the repository
+2. Create `application.properties` from `application.properties.example`
+3. Set up PostgreSQL
+
+
+## Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/meals/categories` | Get all meal categories |
+| GET | `/api/meals/search?query=chicken` | Search meals by name |
