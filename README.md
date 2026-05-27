@@ -25,4 +25,4 @@ JPA
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/meals/categories` | Get all meal categories |
-| GET | `/api/meals/search?query=chicken` | Search meals by name |
+| GET | `/api/meals/search?name=chicken` | Search meals by name |
